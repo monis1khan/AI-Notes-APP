@@ -25,7 +25,7 @@ http.route({
 
     const { messages }: { messages: UIMessage[] } = await req.json();
 
-    // 1. RETRIEVE: Get the last user message and find relevant notes.
+    
     const lastUserMessage = messages.filter((msg) => msg.role === "user").pop();
     if (!lastUserMessage || !lastUserMessage.parts.some(p => p.type === 'text')) {
       return Response.json({ error: "No user message found" }, { status: 400 });
@@ -47,7 +47,7 @@ http.route({
       )
       .join("\n\n---\n\n");
 
-    // 2. AUGMENT: Create a new query for the AI that includes the retrieved notes.
+   
     const augmentedQuery = `
       Using the following context, answer the user's question.
 
@@ -58,7 +58,7 @@ http.route({
       ${userQuery}
     `;
 
-    // Replace the last user message with the new, augmented version.
+    
     const augmentedMessages: UIMessage[] = [
       ...messages.slice(0, -1),
       {
@@ -67,7 +67,7 @@ http.route({
       },
     ];
 
-    // 3. GENERATE: Call the AI with the augmented message history.
+   
     const result = streamText({
       model: google("models/gemini-1.5-flash-latest"),
        system: `

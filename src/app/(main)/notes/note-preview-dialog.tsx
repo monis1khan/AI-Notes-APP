@@ -10,15 +10,15 @@ import {
 } from "@/components/ui/dialog";
 import { Trash2 } from "lucide-react";
 import { Doc } from "../../../../convex/_generated/dataModel";
-import { title } from "process";
+
 import { useSearchParams } from "next/navigation";
-import { mutation } from "../../../../convex/_generated/server";
+
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useState } from "react";
-import { tree } from "next/dist/build/templates/app-page";
+
 import { toast } from "sonner";
-import { _success } from "zod/v4/core";
+
 
 interface NotePreviewDialogProps{
   note: Doc<"notes">

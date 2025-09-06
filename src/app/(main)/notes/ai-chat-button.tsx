@@ -8,7 +8,7 @@ import { useAuthToken } from "@convex-dev/auth/react";
 import { DefaultChatTransport, UIMessage } from "ai";
 import { Bot, Expand, Minimize, Send, Trash, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-import Markdown from "react-markdown";
+import Markdown from "@/components/markdown";
 
 const convexSiteUrl = process.env.NEXT_PUBLIC_CONVEX_URL?.replace(
   /.cloud$/,
@@ -17,7 +17,7 @@ const convexSiteUrl = process.env.NEXT_PUBLIC_CONVEX_URL?.replace(
 
 export function AIChatButton() {
   const [chatOpen, setChatOpen] = useState(false);
-  const token = useAuthToken(); // Get the token in the parent component
+  const token = useAuthToken();
 
   return (
     <>
@@ -25,10 +25,9 @@ export function AIChatButton() {
         <Bot />
         <span>Ask AI</span>
       </Button>
-      {/* Conditionally render the chatbox only when the token is ready */}
       {token && (
         <AIChatBox
-          key={chatOpen ? "open" : "closed"} // Force re-mount when opened
+          key={chatOpen ? "open" : "closed"}
           open={chatOpen}
           onClose={() => setChatOpen(false)}
         />
@@ -80,8 +79,7 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
     }
   }, [open, messages.length]);
 
-  function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  const handleSubmit = () => {
     if (input.trim() && !isProcessing) {
       sendMessage({
         role: "user",
@@ -89,12 +87,17 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
       });
       setInput("");
     }
-  }
+  };
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSubmit();
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      onSubmit(e as any);
+      handleSubmit();
     }
   };
 
@@ -183,7 +186,10 @@ interface ChatMessageProps {
 
 function ChatMessage({ message }: ChatMessageProps) {
   const currentStep = message.parts.at(-1);
-  
+
+  if (!currentStep) {
+    return null;
+  }
 
   return (
     <div
@@ -206,12 +212,12 @@ function ChatMessage({ message }: ChatMessageProps) {
             AI Assistant
           </div>
         )}
-        {currentStep?.type === "text" && (
+        {currentStep.type === "text" && (
           <div className="prose dark:prose-invert first:prose-p:mt-0">
             <Markdown>{currentStep.text}</Markdown>
           </div>
         )}
-        {currentStep?.type === "tool-invocation" && (
+        {currentStep.type === "tool-invocation" && (
           <div className="italic animate-pulse">Searching notes...</div>
         )}
       </div>
