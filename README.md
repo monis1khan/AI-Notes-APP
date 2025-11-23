@@ -1,3 +1,4 @@
+# AI Notes App
 🧠 AI Notes App
 A next-generation note-taking application that uses Retrieval-Augmented Generation (RAG) to make your personal knowledge base intelligent. Built with Next.js 15, Convex, and the Vercel AI SDK.
 
